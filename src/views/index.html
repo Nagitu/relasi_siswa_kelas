@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 250px;
+            background-color: skyblue;
+            border-radius: 10px;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .edit-button,
+        .delete-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Student Cards</h1>
+    <div class="cards-container" id="cards-container"></div>
+
+    <!-- Modal Edit -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Student</h2>
+            <label for="editName">Name:</label>
+            <input type="text" id="editName" name="editName" placeholder="Edit name...">
+            <label for="editAddress">Address:</label>
+            <input type="text" id="editAddress" name="editAddress" placeholder="Edit address...">
+            <label for="editClass">Class:</label>
+            <input type="text" id="editClass" name="editClass" placeholder="Edit class...">
+            <div>
+                <button class="edit-button" onclick="saveEdit()">Save</button>
+                <button class="delete-button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchStudents() {
+            const response = await fetch('http://localhost:4000/api/v1/siswa/all');
+            const data = await response.json();
+
+            const cardsContainer = document.getElementById('cards-container');
+            data.data.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const title = document.createElement('h2');
+                title.textContent = student.full_name;
+
+                const address = document.createElement('p');
+                address.textContent = `Alamat: ${student.alamat}`;
+
+                const classInfo = document.createElement('p');
+                classInfo.textContent = `Kelas: ${student.id_kelas}`;
+
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'buttons';
+
+                const editButton = document.createElement('button');
+                editButton.className = 'edit-button';
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editCard(student.id);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-button';
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteCard(student.id);
+
+                buttonsDiv.appendChild(editButton);
+                buttonsDiv.appendChild(deleteButton);
+
+                card.appendChild(title);
+                card.appendChild(address);
+                card.appendChild(classInfo);
+                card.appendChild(buttonsDiv);
+
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function editCard(id) {
+            // Fungsi untuk mengedit kartu dengan ID tertentu
+            console.log("Edit card with ID: " + id);
+        }
+
+        function deleteCard(id) {
+            // Fungsi untuk menghapus kartu dengan ID tertentu
+            console.log("Delete card with ID: " + id);
+        }
+
+        fetchStudents();
+
+        let currentEditId = null; // Variabel untuk menyimpan ID siswa yang akan diedit
+
+        async function fetchStudentById(id) {
+            const response = await fetch(`http://localhost:4000/api/v1/siswa/${id}`);
+            const data = await response.json();
+            return data
+        }
+
+        async function editCard(id) {
+            currentEditId = id;
+            const editModal = document.getElementById('editModal');
+            const student = await fetchStudentById(id);
+
+            if (student) {
+                const editNameInput = document.getElementById('editName');
+                const editAddressInput = document.getElementById('editAddress');
+                const editClassInput = document.getElementById('editClass');
+
+                editNameInput.value = student.full_name;
+                editAddressInput.value = student.alamat;
+                editClassInput.value = student.id_kelas;
+
+                editModal.style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            const editModal = document.getElementById('editModal');
+            editModal.style.display = 'none';
+        }
+
+        function saveEdit() {
+            // Mendapatkan nilai-nilai dari input
+            const editNameInput = document.getElementById('editName');
+            const editAddressInput = document.getElementById('editAddress');
+            const editClassInput = document.getElementById('editClass');
+
+            // Simpan logika penyimpanan di sini (misalnya dengan mengirim PUT request ke server)
+            console.log("Saving edits for student with ID: " + currentEditId);
+
+            closeModal();
+        }
+    </script>
+</body>
+
+</html>
