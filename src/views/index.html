@@ -84,103 +84,119 @@
         </div>
     </div>
 
+    
+
     <script>
         async function fetchStudents() {
-            const response = await fetch('http://localhost:4000/api/v1/siswa/all');
-            const data = await response.json();
-
-            const cardsContainer = document.getElementById('cards-container');
-            data.data.forEach(student => {
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                const title = document.createElement('h2');
-                title.textContent = student.full_name;
-
-                const address = document.createElement('p');
-                address.textContent = `Alamat: ${student.alamat}`;
-
-                const classInfo = document.createElement('p');
-                classInfo.textContent = `Kelas: ${student.id_kelas}`;
-
-                const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'buttons';
-
-                const editButton = document.createElement('button');
-                editButton.className = 'edit-button';
-                editButton.textContent = 'Edit';
-                editButton.onclick = () => editCard(student.id);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.className = 'delete-button';
-                deleteButton.textContent = 'Delete';
-                deleteButton.onclick = () => deleteCard(student.id);
-
-                buttonsDiv.appendChild(editButton);
-                buttonsDiv.appendChild(deleteButton);
-
-                card.appendChild(title);
-                card.appendChild(address);
-                card.appendChild(classInfo);
-                card.appendChild(buttonsDiv);
-
-                cardsContainer.appendChild(card);
-            });
-        }
-
-        function editCard(id) {
-            // Fungsi untuk mengedit kartu dengan ID tertentu
-            console.log("Edit card with ID: " + id);
-        }
-
-        function deleteCard(id) {
-            // Fungsi untuk menghapus kartu dengan ID tertentu
-            console.log("Delete card with ID: " + id);
-        }
-
-        fetchStudents();
-
-        let currentEditId = null; // Variabel untuk menyimpan ID siswa yang akan diedit
-
-        async function fetchStudentById(id) {
-            const response = await fetch(`http://localhost:4000/api/v1/siswa/${id}`);
-            const data = await response.json();
-            return data
-        }
-
-        async function editCard(id) {
-            currentEditId = id;
-            const editModal = document.getElementById('editModal');
-            const student = await fetchStudentById(id);
-
-            if (student) {
-                const editNameInput = document.getElementById('editName');
-                const editAddressInput = document.getElementById('editAddress');
-                const editClassInput = document.getElementById('editClass');
-
-                editNameInput.value = student.full_name;
-                editAddressInput.value = student.alamat;
-                editClassInput.value = student.id_kelas;
-
-                editModal.style.display = 'block';
+            async function fetchStudents() {
+                try {
+                    const response = await fetch('http://localhost:4000/api/v1/siswa/all');
+                    if (!response.ok) {
+                        throw new Error(`Error fetching data: ${response.status} - ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    console.log(data);
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                }
             }
-        }
 
-        function closeModal() {
-            const editModal = document.getElementById('editModal');
-            editModal.style.display = 'none';
-        }
+            fetchStudents();
 
-        function saveEdit() {
-            // Mendapatkan nilai-nilai dari input
-            const editNameInput = document.getElementById('editName');
-            const editAddressInput = document.getElementById('editAddress');
-            const editClassInput = document.getElementById('editClass');
 
-            // Simpan logika penyimpanan di sini (misalnya dengan mengirim PUT request ke server)
-            console.log("Saving edits for student with ID: " + currentEditId);
 
-            closeModal();
+            //     const cardsContainer = document.getElementById('cards-container');
+            //     data.data.forEach(student => {
+            //         const card = document.createElement('div');
+            //         card.className = 'card';
+
+            //         const title = document.createElement('h2');
+            //         title.textContent = student.full_name;
+
+            //         const address = document.createElement('p');
+            //         address.textContent = `Alamat: ${student.alamat}`;
+
+            //         const classInfo = document.createElement('p');
+            //         classInfo.textContent = `Kelas: ${student.id_kelas}`;
+
+            //         const buttonsDiv = document.createElement('div');
+            //         buttonsDiv.className = 'buttons';
+
+            //         const editButton = document.createElement('button');
+            //         editButton.className = 'edit-button';
+            //         editButton.textContent = 'Edit';
+            //         editButton.onclick = () => editCard(student.id);
+
+            //         const deleteButton = document.createElement('button');
+            //         deleteButton.className = 'delete-button';
+            //         deleteButton.textContent = 'Delete';
+            //         deleteButton.onclick = () => deleteCard(student.id);
+
+            //         buttonsDiv.appendChild(editButton);
+            //         buttonsDiv.appendChild(deleteButton);
+
+            //         card.appendChild(title);
+            //         card.appendChild(address);
+            //         card.appendChild(classInfo);
+            //         card.appendChild(buttonsDiv);
+
+            //         cardsContainer.appendChild(card);
+            //     });
+            // }
+
+            // function editCard(id) {
+            //     // Fungsi untuk mengedit kartu dengan ID tertentu
+            //     console.log("Edit card with ID: " + id);
+            // }
+
+            // function deleteCard(id) {
+            //     // Fungsi untuk menghapus kartu dengan ID tertentu
+            //     console.log("Delete card with ID: " + id);
+            // }
+
+            // fetchStudents();
+
+            // let currentEditId = null; // Variabel untuk menyimpan ID siswa yang akan diedit
+
+            // async function fetchStudentById(id) {
+            //     const response = await fetch(`http://localhost:4000/api/v1/siswa/${id}`);
+            //     const data = await response.json();
+            //     return data
+            // }
+
+            // async function editCard(id) {
+            //     currentEditId = id;
+            //     const editModal = document.getElementById('editModal');
+            //     const student = await fetchStudentById(id);
+
+            //     if (student) {
+            //         const editNameInput = document.getElementById('editName');
+            //         const editAddressInput = document.getElementById('editAddress');
+            //         const editClassInput = document.getElementById('editClass');
+
+            //         editNameInput.value = student.full_name;
+            //         editAddressInput.value = student.alamat;
+            //         editClassInput.value = student.id_kelas;
+
+            //         editModal.style.display = 'block';
+            //     }
+            // }
+
+            // function closeModal() {
+            //     const editModal = document.getElementById('editModal');
+            //     editModal.style.display = 'none';
+            // }
+
+            // function saveEdit() {
+            //     // Mendapatkan nilai-nilai dari input
+            //     const editNameInput = document.getElementById('editName');
+            //     const editAddressInput = document.getElementById('editAddress');
+            //     const editClassInput = document.getElementById('editClass');
+
+            //     // Simpan logika penyimpanan di sini (misalnya dengan mengirim PUT request ke server)
+            //     console.log("Saving edits for student with ID: " + currentEditId);
+
+            //     closeModal();
         }
     </script>
 </body>
